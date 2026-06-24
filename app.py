@@ -38,7 +38,7 @@ CATEGORIES = [
     ("Novel & Sastera", "Cerita-cerita yang menyentuh jiwa dan karya sastera pilihan.", IMG["novel"]),
     ("Horror",          "Kisah seram dan misteri yang mendebarkan untuk pembaca berani.", IMG["horror"]),
     ("Majalah",         "Majalah terkini penuh ilmu, gaya hidup dan inspirasi.",          IMG["majalah"]),
-    ("Anime",           "Dunia anime dan manga yang penuh warna dan imaginasi.",          IMG["anime"]),
+    ("Anime",           "Dunia anime dan manga yang penuh warna and imaginasi.",          IMG["anime"]),
     ("Religion",        "Bacaan keagamaan untuk ketenangan dan pedoman hidup.",           IMG["religion"]),
     ("English",         "A curated selection of English reads for every reader.",          IMG["english"]),
 ]
@@ -307,7 +307,7 @@ def top_nav():
                 is_active = True
             elif channel == "CREDENTIALS" and current_p == "SSM":
                 is_active = True
-            elif channel == "CONTACT & REVIEWS" and current_p == "Contact":
+            elif channel == "CONTACT & REVIEWS" and current_p in ["Contact", "Reviews"]:
                 is_active = True
 
             if st.button(
@@ -351,6 +351,17 @@ def top_nav():
         with sub_cols[2]:
             if st.button("BEST SELLERS", type="primary" if st.session_state.page == "Best Sellers" else "secondary", key="sub_b", use_container_width=True):
                 st.session_state.page = "Best Sellers"; st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    elif st.session_state.page in ["Contact", "Reviews"]:
+        st.markdown('<div class="subnav-panel">', unsafe_allow_html=True)
+        sub_cols = st.columns([1.5, 1.5, 5.0])
+        with sub_cols[0]:
+            if st.button("CONTACT INFO", type="primary" if st.session_state.page == "Contact" else "secondary", key="sub_cont", use_container_width=True):
+                st.session_state.page = "Contact"; st.rerun()
+        with sub_cols[1]:
+            if st.button("CUSTOMER REVIEWS", type="primary" if st.session_state.page == "Reviews" else "secondary", key="sub_rev", use_container_width=True):
+                st.session_state.page = "Reviews"; st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -422,13 +433,9 @@ def page_books():
         with col:
             st.markdown(f'<div class="media"><img src="{img}"><div class="body"><span class="badge">{genre}</span><h3>{title}</h3><div class="stars">{stars(rate)}</div><p class="price">{price}</p></div></div>', unsafe_allow_html=True)
 
-# ──────────────────────────────────────────────────────────────────────────────
-# FIXED: MEMASUKKAN BUKU SEBENAR DENGAN REKA BENTUK CARD ASAL (TIADA PERUBAHAN GAYA)
-# ──────────────────────────────────────────────────────────────────────────────
 def page_bestsellers():
     hero("Best Sellers", "The categories our readers love most.", IMG["novel"])
     
-    # Memetakan buku terlaris syarikat menggunakan template seni reka asal .media & .card anda
     bestsellers = [
         ("Atas Pelamin Bertemu Jua", "Novel & Sastera", 5, "RM 7.80", IMG["novel"]),
         ("Novel Melayu Fixi Series",  "Horror",          5, "RM 10.00", IMG["horror"]),
@@ -451,9 +458,6 @@ def page_ssm():
     hero("Corporate Legitimacy", "Official registration and legal statutory data.", IMG["warm"])
     st.markdown('<div class="card"><h3>SSM Registered: Veldora Ventures</h3><p>Registration No: 202603094530 (003840271-D). Verified Active.</p></div>', unsafe_allow_html=True)
 
-# ──────────────────────────────────────────────────────────────────────────────
-# FIXED: MENAMBAH SOSIAL MEDIA RASMI & MEDAN BORANG (EMAIL & PHONE) TANPA USIK CODE GAYA
-# ──────────────────────────────────────────────────────────────────────────────
 def page_contact():
     hero("Contact Us", "Every great story starts with a conversation.", IMG["contact"])
     a, b = st.columns(2)
@@ -481,13 +485,26 @@ def page_contact():
             st.text_area("Your Message")
             st.form_submit_button("SUBMIT MESSAGE")
 
+def page_reviews():
+    hero("Customer Reviews", "What our community says about Helaian Kertas Jiwa.", IMG["lounge"])
+    st.markdown("<h2>Customer Testimonials</h2><hr class=\"rule\">", unsafe_allow_html=True)
+    rev_cols = st.columns(3)
+    reviews = [
+        ("Penghantaran sangat laju, buku dibungkus dengan bubble wrap yang tebal. Terbaik Helaian Kertas Jiwa!", "★★★★★", "— Khairul A."),
+        ("Novel seram Fixi kegemaran saya sampai dalam keadaan tiada cacat cela. Servis Veldora Ventures mantap.", "★★★★★", "— Siti N."),
+        ("Suka sangat beli majalah humor kat sini buat bacaan santai hujung minggu. Kedai online yang sangat trusted.", "★★★★★", "— Firdaus M.")
+    ]
+    for col, (comment, rating, author) in zip(rev_cols, reviews):
+        with col:
+            st.markdown(f'<div class="card"><div class="stars">{rating}</div><p><i>"{comment}"</i></p><p style="text-align:right; font-weight:600;">{author}</p></div>', unsafe_allow_html=True)
+
 # ──────────────────────────────────────────────────────────────────────────────
 # 8. CORE APPLICATION ROUTER
 # ──────────────────────────────────────────────────────────────────────────────
 VIEW_ROUTER = {
     "Home": page_home, "About Us": page_about, "Vision & Mission": page_vision,
     "Categories": page_collections, "Featured": page_books, "Best Sellers": page_bestsellers,
-    "Market": page_market, "SSM": page_ssm, "Contact": page_contact,
+    "Market": page_market, "SSM": page_ssm, "Contact": page_contact, "Reviews": page_reviews,
 }
 
 inject_css()
